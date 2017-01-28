@@ -85,14 +85,13 @@ Point getPointByKey(wstring wkey, JSONObject root){
 	return  Point(x, y);
 }
 
-ConfigExample::ConfigExample() {
-
-}
-
 /*
  * parsing constant form JSON file
  */
-ConfigExample::ConfigExample(char* path) {
+ConfigExample::ConfigExample(char* path, int inputMode, int printMode) {
+
+	this->inputMode = inputMode;
+	this->printMode = printMode;
 	FileSystemHelper mFileSystemHelper;
 	string s = mFileSystemHelper.getFileContent(path);
     cout << s << endl;
@@ -109,8 +108,8 @@ ConfigExample::ConfigExample(char* path) {
 
 		VIDEO_NAME = string(ASSETS_FOLDER).append(getStrByKey(L"VIDEO_NAME", root));
 		FOLDER = string(ASSETS_FOLDER).append(getStrByKey(L"FOLDER", root));
-        URL = string(ASSETS_FOLDER).append(getStrByKey(L"URL", root));
-        STATIC_BACKGROUND_IMG = string(ASSETS_FOLDER).append(getStrByKey(L"STATIC_BACKGROUND_IMG", root));
+		URL = string(ASSETS_FOLDER).append(getStrByKey(L"URL", root));
+		STATIC_BACKGROUND_IMG = string(ASSETS_FOLDER).append(getStrByKey(L"STATIC_BACKGROUND_IMG", root));
 
         // TODO add your constants here
 
@@ -151,7 +150,7 @@ void ConfigExample::debugPrintOut(){
 	cout << "VIDEO_NAME:" << VIDEO_NAME << endl;
 	cout << "FOLDER:" << FOLDER << endl;
 	cout << "FOLDER_NAME:" << FOLDER_NAME << endl;
-    cout << "STATIC_BACKGROUND_IMG:" << STATIC_BACKGROUND_IMG << endl;
+	cout << "STATIC_BACKGROUND_IMG:" << STATIC_BACKGROUND_IMG << endl;
 
 	cout << "FONT_SIZE:" << FONT_SIZE << endl;
 	cout << "FONT_SIZE_SM:" << FONT_SIZE_SM << endl;

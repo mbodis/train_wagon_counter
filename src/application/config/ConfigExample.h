@@ -25,8 +25,7 @@ class ConfigExample{
 private:
     bool isFontSizeSet = false;
 public:
-	ConfigExample(void);
-	ConfigExample(char*);
+	ConfigExample(char*, int, int);
 	void debugPrintOut();
     void initFontSize(Mat*);
     void setFontSize(int, int);
@@ -34,8 +33,11 @@ public:
 	string VIDEO_NAME;
 	string FOLDER;
 	char* FOLDER_NAME = (char*)FOLDER.c_str();
-    string STATIC_BACKGROUND_IMG;
+	string STATIC_BACKGROUND_IMG;
+	int inputMode;
+	int printMode;
     string URL;
+    int CAMERA_IDX;
     
     int IMG_WIDTH;
 	int IMG_HEIGHT;

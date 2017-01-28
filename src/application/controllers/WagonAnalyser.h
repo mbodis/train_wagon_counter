@@ -2,17 +2,15 @@
 #ifndef WAGONANALYSER_H
 #define WAGONANALYSER_H
 
-
-#include "DebugFrames.h"
-#include "WagonCounter.h"
-#include "../../system/logic/input/keyboard/InputFacade.h"
 #include "../../system/features/BinaryFilter.h"
+#include "../../system/controllers/ImageAnalyser.h"
 #include "../config/ConfigExample.h"
+#include "../controllers/WagonCounter.h"
 
 /*
  * custom application logic 
  */
-class WagonAnalyser{
+class WagonAnalyser : public ImageAnalyser{
     
 private:
     
@@ -44,13 +42,18 @@ private:
     
     Mat filtered;
 
-    DebugFrames* mDebugFrames;
     BinaryFilter* mBinaryFilter;
     WagonCounter* mWagonCounter;
     
 public:
-    
-    WagonAnalyser(DebugFrames*);
+    WagonAnalyser(ConfigExample *config, int inputMode, int printMode) : ImageAnalyser(config, inputMode, printMode){
+    	this->mBinaryFilter = new BinaryFilter();
+		this->mWagonCounter = new WagonCounter();
+
+		initBackground();
+		initTrackball();
+	}
+	void executeCustomLogic(Mat, int);
     
     void analyse(Mat, int);
     

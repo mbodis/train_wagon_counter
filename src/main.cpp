@@ -19,6 +19,7 @@ using namespace std;
 
 #include "application/config/ConfigExample.h"
 #include "system/logic/input/ProcessingFacade.h"
+#include "application/controllers/WagonAnalyser.h"
 
 /*
  * reload application constants
@@ -43,8 +44,9 @@ static int INPUT_MODE = INPUT_MODE_VIDEO_FRAME;
  */
 int main(int argc, char **argv) {
 
-	ConfigExample mConfigExample(EXAMPLE_CONFIG);
-    ProcessingFacade mProcessingFacade(&mConfigExample, PRINT_MODE, INPUT_MODE);
+	ConfigExample mConfigExample(EXAMPLE_CONFIG, INPUT_MODE, PRINT_MODE);
+	WagonAnalyser mWagonAnalyser(&mConfigExample, INPUT_MODE, PRINT_MODE);
+    ProcessingFacade mProcessingFacade(&mConfigExample, &mWagonAnalyser);
     mProcessingFacade.runAnalyse();
 
 	return 0;

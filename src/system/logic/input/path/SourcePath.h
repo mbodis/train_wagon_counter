@@ -16,10 +16,15 @@ class SourcePath{
 public:
 
 	string path;
+	int cameraIdx = 0;
 
 	SourcePath(string pathInput){
             this->path = pathInput;
     }
+
+	SourcePath(int cameraIdx){
+			this->cameraIdx = cameraIdx;
+	}
 
 	virtual int getSourceType(){ throw "Use subclass"; };
 	virtual ~SourcePath(){ throw "Use subclass"; };

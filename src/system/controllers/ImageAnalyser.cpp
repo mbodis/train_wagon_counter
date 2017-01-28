@@ -1,32 +1,30 @@
 
 
+#include "../controllers/ImageAnalyser.h"
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "ImageAnalyser.h"
-#include "WagonAnalyser.h"
+
+
 
 using namespace cv;
 using namespace std;
 
 
-ImageAnalyser::ImageAnalyser(ConfigExample *config, int inputMode, int printMode, InputFacade *facade){
-        
+ImageAnalyser::ImageAnalyser(ConfigExample *config, int inputMode, int printMode){
+
     this->mDebugFrames = new DebugFrames(config, inputMode, printMode);
     this->inputMode = inputMode;
     this->printMode = printMode;
-    this->facade = facade;
-    
-    // TODO initial my logic class
-    this->mWagonAnalyser = new WagonAnalyser(this->mDebugFrames); 
 }
 
 bool ImageAnalyser::analyse(Mat frame, int videoTime) {
     if (frame.dims == 0) return true;
 
-    // TODO execute my logic
-    mWagonAnalyser->analyse(frame, videoTime);
+    executeCustomLogic(frame, videoTime);
+    imshow("frame", frame);
 
     return keyaboardInput(&frame);
 }
@@ -35,9 +33,11 @@ bool ImageAnalyser::keyaboardInput(Mat *frame){
     // keyboard input action
     char key = (char) waitKey(40);
     mDebugFrames->keyInput(key, frame);
-    facade->keyInput(key);
     if (key == 27) return false;
     
     return true;
 }
 
+void ImageAnalyser::executeCustomLogic(Mat frame, int videoTime){
+	// TODO initial my logic class
+}

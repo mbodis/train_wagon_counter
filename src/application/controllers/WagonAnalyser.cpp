@@ -1,35 +1,29 @@
 
 
+#include "../controllers/WagonAnalyser.h"
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "WagonAnalyser.h"
-#include "WagonCounter.h"
 #include "../../system/helper/TimeHelper.h"
+#include "../controllers/WagonCounter.h"
 
 
 using namespace cv;
 using namespace std;
 
 
-WagonAnalyser::WagonAnalyser(DebugFrames *dDebugFrames){
-    
-    this->mDebugFrames = dDebugFrames;
-    this->mBinaryFilter = new BinaryFilter(); 
-    this->mWagonCounter = new WagonCounter();
-    
-    initBackground();
-    initTrackball();
+void WagonAnalyser::executeCustomLogic(Mat frame, int videoTime){
+	analyse(frame, videoTime);
 }
-
 void WagonAnalyser::initBackground(){
     // read background   
-    staticBgImg = imread(mDebugFrames->c.STATIC_BACKGROUND_IMG, 1);
+    staticBgImg = imread(mDebugFrames->c->STATIC_BACKGROUND_IMG, 1);
 	if (!staticBgImg.data) {
-		cout << "Error loading img - staticBgImg path: "<< mDebugFrames->c.STATIC_BACKGROUND_IMG << endl;
+		cout << "Error loading img - staticBgImg path: "<< mDebugFrames->c->STATIC_BACKGROUND_IMG << endl;
 	}
-    cout << "loading img - staticBgImg path: "<< mDebugFrames->c.STATIC_BACKGROUND_IMG << endl;
+    cout << "loading img - staticBgImg path: "<< mDebugFrames->c->STATIC_BACKGROUND_IMG << endl;
     cvtColor(staticBgImg, staticBgImg, CV_BGR2GRAY); 
     if (resiseInput){
         resizedWidth = staticBgImg.cols/resizeRatio;
@@ -93,7 +87,7 @@ void WagonAnalyser::saveInputFrame(Mat frame, int videoTime){
     equalizeHist(grayFrame, grayFrame);
     
     // save img size and setup font size
-    mDebugFrames->c.initFontSize(&frame);
+    mDebugFrames->c->initFontSize(&frame);
 }
 
 void WagonAnalyser::compateTwoBinFrames(Mat *binMat1, Mat *binMat2, Mat *binOutMat, int sliderVal){

@@ -11,15 +11,15 @@
 #include "processing/DirImageFrameProcessing.h"
 #include "processing/VideoFrameProcessing.h"
 #include "processing/VideoFrameProcessingRunEveryFrame.h"
+#include "processing/VideoFrameProcessingLocalCamera.h"
 #include "path/DirPath.h"
 #include "path/VideoPath.h"
 #include "path/UrlPath.h"
-#include "../../../application/controller/ImageAnalyser.h"
+#include "path/CameraPath.h"
 
-ProcessingFacade::ProcessingFacade(ConfigExample *mConfigExample, int printMode, int inputMode) {
-    this->c = *mConfigExample;
-    this->printMode = printMode;
-    this->inputMode = inputMode;
+ProcessingFacade::ProcessingFacade(ConfigExample *mConfigExample, ImageAnalyser *mImageAnalyser) {
+    this->mConfigExample = mConfigExample;
+    this->mImageAnalyser = mImageAnalyser;
 }
 
 /*
@@ -27,18 +27,21 @@ ProcessingFacade::ProcessingFacade(ConfigExample *mConfigExample, int printMode,
  */
 void ProcessingFacade::runAnalyse() {
 
-    if (this->inputMode == INPUT_MODE_IMG_FOLDER){
+    if (this->mConfigExample->inputMode == INPUT_MODE_IMG_FOLDER){
         runDirImageFrameProcessing();
         
-    }else if (this->inputMode == INPUT_MODE_VIDEO_RT){
+    }else if (this->mConfigExample->inputMode == INPUT_MODE_VIDEO_RT){
         runVideoFrameProcessing();
         
-    }else if (this->inputMode == INPUT_MODE_VIDEO_FRAME){
+    }else if (this->mConfigExample->inputMode == INPUT_MODE_VIDEO_FRAME){
         runVideoFrameProcessingRunEveryFrame();        
         
-    }else if (this->inputMode == INPUT_MODE_URL){
+    }else if (this->mConfigExample->inputMode == INPUT_MODE_URL){
         runURLVideoFrameProcessing();
         
+    }else if (this->mConfigExample->inputMode == INPUT_MODE_LOCAL_CAMERA){
+    	runLocalCameraFrameProcessing();
+
     }else{
         cout << "Processing facade: unsupported input type" << endl;
     }
@@ -49,28 +52,40 @@ void ProcessingFacade::runAnalyse() {
  * input from folder with multiple images
  */
 void ProcessingFacade::runDirImageFrameProcessing() {
-    (new DirImageFrameProcessing(&c, new DirPath(c.FOLDER)))->start();
+    (new DirImageFrameProcessing(mConfigExample, mImageAnalyser, new DirPath(mConfigExample->FOLDER)))
+    		->start();
 }
 
 /*
  * video input from file - real time
  */
 void ProcessingFacade::runVideoFrameProcessing() {
-    VideoPath* mVideoPath = new VideoPath(c.VIDEO_NAME);
-	(new VideoFrameProcessing(mVideoPath, &c))->start(inputMode, printMode);
+	(new VideoFrameProcessing(new VideoPath(mConfigExample->VIDEO_NAME), mConfigExample, mImageAnalyser))
+			->start();
 }
 
 /*
  * video input from file - analyze on every frame
  */
 void ProcessingFacade::runVideoFrameProcessingRunEveryFrame() {
-	VideoPath* mVideoPath = new VideoPath(c.VIDEO_NAME);
-	(new VideoFrameProcessingRunEveryFrame(mVideoPath, &c))->start(inputMode, printMode);
+	(new VideoFrameProcessingRunEveryFrame(new VideoPath(mConfigExample->VIDEO_NAME), mConfigExample, mImageAnalyser))
+			->start();
 }
 
 /*
  * video input from url
  */
 void ProcessingFacade::runURLVideoFrameProcessing() {
-	(new VideoFrameProcessing(new UrlPath(c.VIDEO_NAME), &c))->start(inputMode, printMode);
+	(new VideoFrameProcessing(new UrlPath(mConfigExample->URL), mConfigExample, mImageAnalyser))
+			->start();
+}
+
+/*
+ * video input from local camera/usb camera
+ */
+void ProcessingFacade::runLocalCameraFrameProcessing() {
+	(new VideoFrameProcessingLocalCamera(new CameraPath(mConfigExample->CAMERA_IDX), mConfigExample, mImageAnalyser))
+			->start();
+//	(new VideoFrameProcessingLocalCamera(new CameraPath(mConfigExample->CAMERA_IDX), mConfigExample, mImageAnalyser))
+//			->startEveryFrame();
 }

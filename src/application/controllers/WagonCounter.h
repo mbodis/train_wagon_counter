@@ -2,9 +2,8 @@
 #ifndef WAGONCOUNTER_H
 #define WAGONCOUNTER_H
 
-#include "DebugFrames.h"
-#include "WagonCounter.h"
-#include "../../system/logic/input/keyboard/InputFacade.h"
+#include "../controllers/WagonCounter.h"
+
 #include "../../system/features/BinaryFilter.h"
 #include "../config/ConfigExample.h"
 
